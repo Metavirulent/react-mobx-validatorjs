@@ -1,0 +1,68 @@
+{
+  "name": "react-mobx-validatorjs",
+  "version": "0.0.1",
+  "description": "validator for react and mobx",
+  "main": "dist/react-mobx-validatorjs.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "tslint": "tslint -t verbose -c tslint.json src/**/*.tsx src/**/*.ts",
+    "test": "node --harmony node_modules/jest/bin/jest.js",
+    "clean-dist": "npm run remove-dist && mkdir dist",
+    "remove-dist": "rimraf ./dist",
+    "prebuild": "npm run clean-dist && npm run tslint && npm run test",
+    "build": "tsc -p ./ --outDir dist/"
+  },
+  "keywords": [
+    "react",
+    "mobx",
+    "validatorjs",
+    "form",
+    "validation"
+  ],
+  "author": "Markus Öllinger <oellinger.markus@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metavirulent/react-mobx-validatorjs"
+  },
+  "dependencies": {
+    "@types/react": "16.3.17",
+    "@types/react-dom": "16.0.6",
+    "@types/react-intl": "2.3.2",
+    "@types/validatorjs": "3.7.0",
+    "mobx": "4.3.1",
+    "mobx-react": "5.2.3",
+    "react": "16.3.2",
+    "react-dom": "16.3.2",
+    "react-intl": "2.4.0",
+    "validatorjs": "3.13.5"
+  },
+  "devDependencies": {
+    "@types/enzyme": "3.1.15",
+    "@types/jest": "23.3.3",
+    "enzyme": "3.7.0",
+    "enzyme-adapter-react-16": "1.7.0",
+    "jest": "23.6.0",
+    "raf": "3.4.0",
+    "rimraf": "2.5.4",
+    "ts-jest": "23.10.4",
+    "tslint": "5.4.3",
+    "typescript": "^2.9.2"
+  },
+  "jest": {
+    "setupFiles": [
+      "raf/polyfill",
+      "./tools/setupJestEnvironment.js"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
+  }
+}

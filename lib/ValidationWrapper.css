@@ -1,0 +1,11 @@
+.invalid-msg {
+  color: #D52F4E;
+  font-size: 11px;
+  display: block;
+  margin-top: 1px;
+}
+
+.invalid-field {
+  border-bottom: 1px solid #D52F4E;
+  border-bottom-width: 1px;
+}

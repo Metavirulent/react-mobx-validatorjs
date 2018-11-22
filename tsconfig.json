@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "noEmit": false
+  },
+  "exclude": [
+    "node_modules",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts"
+  ],
+  "include": [
+    "src/**/*.tsx",
+    "src/**/*.ts"
+  ]
+}

@@ -144,7 +144,7 @@ Now, whenever you edit one of the properties in the model, a new validation is t
 Moreover, since validation is done on the model rather than the UI, you can even modify the model behind the scenes
 and get your validation updated.
 
-###ValidationWrapper
+### ValidationWrapper
 
 This is a helper component that visualizes errors. You can roll your own if you prefer.
 

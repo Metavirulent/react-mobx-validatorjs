@@ -34,6 +34,10 @@ export interface ValidationConfig<T> {
      * Defaults to false.
      */
     manual?: boolean;
+    /**
+     * The LocalizationProvider used to localize attributes and set the current language.
+     */
+    localizationProvider?: LocalizationProvider;
 }
 
 export type Validation<T> = ValidatorJS.Validator<T>;
@@ -113,15 +117,14 @@ export interface ModelValidator<T> {
  */
 export function withValidator<T, P>(
     WrappedComponent: React.ComponentClass<P>,
-    config: ValidationConfig<T>,
-    localizationProvider: LocalizationProvider | null | undefined
+    config: ValidationConfig<T>
 ): React.ComponentClass<P> {
     class ValidatorProvider extends React.Component<P> {
         private readonly validator: ModelValidator<T>;
 
         constructor(props, ctx) {
             super(props, ctx);
-            this.validator = new StoreModelValidator(config, localizationProvider);
+            this.validator = new StoreModelValidator(config);
         }
 
         public render() {
@@ -143,11 +146,10 @@ export function withValidator<T, P>(
  * is injected into the wrapped target or the validator will not (yet) be available.
  * If null, then no localization will occur.
  * @param {ValidationConfig<T>} config the configuration to use for validation.
- * @param {LocalizationProvider} localizationProvider used to adapt to your i18n system.
  * @returns {Function} the resulting class decorator.
  */
-export function validator<T, P>(config: ValidationConfig<T>, localizationProvider?: LocalizationProvider): Function {
+export function validator<T, P>(config: ValidationConfig<T>): Function {
     return function (target: React.ComponentClass<P>) {
-        return withValidator(target, config, localizationProvider);
+        return withValidator(target, config);
     };
 }

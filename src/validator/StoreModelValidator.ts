@@ -1,9 +1,7 @@
-import * as React from 'react';
 import * as ValidatorJS from 'validatorjs';
 import {Errors} from 'validatorjs';
 import {action, computed, IObjectDidChange, IReactionDisposer, isObservableMap, observable, observe} from 'mobx';
 import {ModelValidator, Validation, ValidationConfig} from './ModelValidator';
-import {LocalizationProvider} from './LocalizationProvider';
 import {NoopLocalizationProvider} from './NoopLocalizationProvider';
 
 /**
@@ -30,11 +28,10 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
     /**
      * Create a new StoreModelValidator.
      * @param config the validation config holding rules, models and other config.
-     * @param localizationProvider the localization provider localizing attribute names.
      */
-    constructor(private config: ValidationConfig<T>, private localizationProvider?: LocalizationProvider) {
-        if (!this.localizationProvider) {
-            this.localizationProvider = new NoopLocalizationProvider();
+    constructor(private config: ValidationConfig<T>) {
+        if (!this.config.localizationProvider) {
+            this.config.localizationProvider = new NoopLocalizationProvider();
         }
         if (config.model) {
             this.setModel(config.model);
@@ -183,8 +180,8 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
     }
 
     private createValidation(): Validation<T> {
-        if (this.localizationProvider) {
-            const lang = this.localizationProvider.language();
+        if (this.config.localizationProvider) {
+            const lang = this.config.localizationProvider.language();
             if (lang && lang.length >= 2) {
                 ValidatorJS.useLang(lang.substring(0, 2));
             }
@@ -211,10 +208,10 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
      * @param messages the message keys to translate.
      */
     private translateMessageKeys(messages: { [key: string]: string }) {
-        if (messages && this.localizationProvider) {
+        if (messages && this.config.localizationProvider) {
             const translations = {};
             for (let key of Object.keys(messages)) {
-                translations[key] = this.localizationProvider.translate(key);
+                translations[key] = this.config.localizationProvider.translate(key);
             }
             return translations;
         }

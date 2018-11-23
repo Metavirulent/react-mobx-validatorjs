@@ -1,5 +1,4 @@
 import {StoreModelValidator} from './StoreModelValidator';
-import {NoopLocalizationProvider} from './NoopLocalizationProvider';
 import {observable} from 'mobx';
 
 interface ExampleData {
@@ -12,10 +11,10 @@ interface ExampleData {
 class ExampleStore {
     @observable
     public data: ExampleData = {
-        name: 'Tim P. Mandi',
-        age: 12,
-        email: 'timbergoggmandi@duglansmandi.du',
-        birthday: new Date(2006, 6, 17)
+        name: '',
+        age: null,
+        email: '',
+        birthday: null
     };
     public readonly validator =  new StoreModelValidator({
         rules: {
@@ -25,7 +24,7 @@ class ExampleStore {
             birthday: 'date|required_without:age'
         },
         model: this.data
-    }, new NoopLocalizationProvider());
+    });
 }
 
 const mockExampleData: ExampleData = {
@@ -37,56 +36,49 @@ const mockExampleData: ExampleData = {
 
 describe('StoreModelValidator', () => {
 
-    let store: StoreModelValidator<ExampleData>;
+    let store: ExampleStore;
 
     beforeEach(() => {
-        store = new StoreModelValidator({
-            rules: {
-                name: 'required',
-                age: 'numeric|max:99',
-                email: 'email',
-                birthday: 'date|required_without:age'
-            }
-        }, new NoopLocalizationProvider());
+        store = new ExampleStore();
     });
 
     it('has errors with no model set', () => {
-        expect(store.isValid).toBeFalsy();
-        expect(store.errorCount).toBe(2);
-        expect(store.errors.get('name')).toContain('The name field is required.');
-        expect(store.errors.get('birthday')).toContain('The birthday field is required when age is empty.');
+        expect(store.validator.isValid).toBeFalsy();
+        expect(store.validator.errorCount).toBe(2);
+        expect(store.validator.errors.get('name')).toContain('The name field is required.');
+        expect(store.validator.errors.get('birthday')).toContain('The birthday field is required when age is empty.');
     });
 
     describe('all values filled in correctly', () => {
         beforeEach(() => {
-            store.setModel(mockExampleData);
+            store.validator.setModel(mockExampleData);
         });
 
         it('validation passes', () => {
-            expect(store.isValid).toBeTruthy();
+            expect(store.validator.isValid).toBeTruthy();
         });
 
         it('empty name fails', async () => {
-            expect(store.isValid).toBeTruthy();
-            store.model.name = '';
+            expect(store.validator.isValid).toBeTruthy();
+            store.validator.model.name = '';
             await new Promise(resolve => setTimeout(resolve, 100));
-            expect(store.isValid).toBeFalsy();
+            expect(store.validator.isValid).toBeFalsy();
         });
 
         it('birthday not required with age', async () => {
-            expect(store.isValid).toBeTruthy();
-            store.model.birthday = null;
+            expect(store.validator.isValid).toBeTruthy();
+            store.validator.model.birthday = null;
             await new Promise(resolve => setTimeout(resolve, 100));
-            expect(store.isValid).toBeTruthy();
+            expect(store.validator.isValid).toBeTruthy();
         });
 
         it('birthday required without age', async () => {
-            expect(store.isValid).toBeTruthy();
-            store.model.birthday = null;
-            store.model.age = null;
+            expect(store.validator.isValid).toBeTruthy();
+            store.validator.model.birthday = null;
+            store.validator.model.age = null;
             await new Promise(resolve => setTimeout(resolve, 100));
-            expect(store.isValid).toBeFalsy();
-            expect(store.errors.get('birthday')).toContain('The birthday field is required when age is empty.');
+            expect(store.validator.isValid).toBeFalsy();
+            expect(store.validator.errors.get('birthday')).toContain('The birthday field is required when age is empty.');
         });
     });
 });

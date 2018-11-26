@@ -1,8 +1,8 @@
 {
   "name": "react-mobx-validatorjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "validator for react and mobx",
-  "main": "dist/react-mobx-validatorjs.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",

@@ -1,5 +1,4 @@
 import * as ValidatorJS from 'validatorjs';
-import {Errors} from 'validatorjs';
 import {action, computed, IObjectDidChange, IReactionDisposer, isObservableMap, observable, observe} from 'mobx';
 import {ModelValidator, Validation, ValidationConfig} from './ModelValidator';
 import {NoopLocalizationProvider} from './NoopLocalizationProvider';
@@ -86,7 +85,7 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
     }
 
     @computed
-    public get errors(): Errors {
+    public get errors(): ValidatorJS.Errors {
         return this.validation.errors;
     }
 
@@ -198,7 +197,7 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
             validator = new ValidatorJS(this.model, this.config.rules, customMessages);
         }
         if (this.config.attributeNames) {
-            validator.setAttributeNames(this.translateMessageKeys(this.config.attributeNames));
+            validator.setAttributeNames(this.translateAttributeNames(this.config.attributeNames));
         }
         return validator;
     }
@@ -207,15 +206,30 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
      * Translate the given messages using the localizationProvider.
      * @param messages the message keys to translate.
      */
-    private translateMessageKeys(messages: { [key: string]: string }) {
+    private translateMessageKeys(messages: ValidatorJS.ErrorMessages) {
         if (messages && this.config.localizationProvider) {
             const translations = {};
             for (let key of Object.keys(messages)) {
-                translations[key] = this.config.localizationProvider.translate(key);
+                if (translations.hasOwnProperty(key)) {
+                    translations[key] = this.config.localizationProvider.translate(key);
+                }
             }
             return translations;
         }
         return messages;
+    }
+
+    private translateAttributeNames(attributeNames: ValidatorJS.AttributeNames): ValidatorJS.AttributeNames {
+        if (attributeNames && this.config.localizationProvider) {
+            const attributes: ValidatorJS.AttributeNames = {};
+            for (let key of Object.keys(attributeNames)) {
+                if (attributeNames.hasOwnProperty(key)) {
+                    attributes[key] = this.config.localizationProvider.translate(attributes[key]);
+                }
+            }
+            return attributes;
+        }
+        return attributeNames;
     }
 
     /**

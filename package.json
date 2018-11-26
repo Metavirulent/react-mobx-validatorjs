@@ -1,6 +1,6 @@
 {
   "name": "react-mobx-validatorjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "validator for react and mobx",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,18 +27,16 @@
     "url": "https://github.com/metavirulent/react-mobx-validatorjs"
   },
   "dependencies": {
-    "@types/react": "16.3.17",
-    "@types/react-dom": "16.0.6",
-    "@types/react-intl": "2.3.2",
-    "@types/validatorjs": "3.7.0",
-    "mobx": "4.3.1",
-    "mobx-react": "5.2.3",
-    "react": "16.3.2",
-    "react-dom": "16.3.2",
-    "react-intl": "2.4.0",
-    "validatorjs": "3.13.5"
+    "mobx": "^4.3.1",
+    "mobx-react": "^5.2.3",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "validatorjs": "^3.13.5"
   },
   "devDependencies": {
+    "@types/react": "16.3.17",
+    "@types/react-dom": "16.0.6",
+    "@types/validatorjs": "3.7.0",
     "@types/enzyme": "3.1.15",
     "@types/jest": "23.3.3",
     "enzyme": "3.7.0",

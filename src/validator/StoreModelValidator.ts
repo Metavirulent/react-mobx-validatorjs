@@ -224,7 +224,7 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
             const attributes: ValidatorJS.AttributeNames = {};
             for (let key of Object.keys(attributeNames)) {
                 if (attributeNames.hasOwnProperty(key)) {
-                    attributes[key] = this.config.localizationProvider.translate(attributes[key]);
+                    attributes[key] = this.config.localizationProvider.translate(attributeNames[key]);
                 }
             }
             return attributes;

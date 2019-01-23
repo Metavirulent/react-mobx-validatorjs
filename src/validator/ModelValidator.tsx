@@ -23,7 +23,7 @@ export interface ValidationConfig<T> {
     /**Keys for custom errors.
      * These will be translated via the localizationProvider.
      */
-    customErrors?: ValidatorJS.ErrorMessages;
+    customErrors?: { [key: string]: string };
     /**
      * Keys for attribute names to localize.
      * These will be translated via a provided LocalizationProvider.
@@ -38,6 +38,21 @@ export interface ValidationConfig<T> {
      * The LocalizationProvider used to localize attributes and set the current language.
      */
     localizationProvider?: LocalizationProvider;
+    /**
+     * Allows filtering of rules so not all of them are used for validation.
+     * @param rules the rules to filter.
+     * @return the resulting filtered rules.
+     */
+    ruleFilter?: (rules: any) => any;
+    /**
+     * Decides whether we shall show an error on the given field right now.
+     * By default this depends on whether the field has been touched or we verified
+     * the whole form.
+     * @param validator the ModelValidator asking for a decision.
+     * @param field the ID of the field to decide for.
+     * @return true if errors should be shown (there don't have to be errors right now).
+     */
+    shallShowErrorsOn?: (validator: ModelValidator<T>, field: string) => boolean;
 }
 
 export type Validation<T> = ValidatorJS.Validator<T>;

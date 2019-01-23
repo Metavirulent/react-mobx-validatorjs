@@ -1,5 +1,14 @@
 import * as ValidatorJS from 'validatorjs';
-import {action, computed, IObjectDidChange, IReactionDisposer, isObservableMap, observable, observe} from 'mobx';
+import {
+    action,
+    computed,
+    IMapDidChange,
+    IObjectDidChange,
+    IReactionDisposer,
+    isObservableMap,
+    observable,
+    observe
+} from 'mobx';
 import {ModelValidator, Validation, ValidationConfig} from './ModelValidator';
 import {NoopLocalizationProvider} from './NoopLocalizationProvider';
 
@@ -28,7 +37,7 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
      * Create a new StoreModelValidator.
      * @param config the validation config holding rules, models and other config.
      */
-    constructor(private config: ValidationConfig<T>) {
+    constructor(protected config: ValidationConfig<T>) {
         if (!this.config.localizationProvider) {
             this.config.localizationProvider = new NoopLocalizationProvider();
         }
@@ -65,6 +74,10 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
     public setRules(rules: any) {
         this.config.rules = rules;
         this.reset();
+    }
+
+    public getRules() {
+        return this.config.rules;
     }
 
     /**
@@ -186,15 +199,16 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
             }
         }
         const customMessages = this.translateMessageKeys(this.config.customErrors);
+        const rules = this.config.ruleFilter ? this.config.ruleFilter(this.config.rules) : this.config.rules;
         let validator;
         if (isObservableMap(this.model)) {          //validatorjs cannot work with maps
             const obj = {};         //convert back to object
             this.model.forEach((v, k) => {
                 obj[k] = v;
             });
-            validator = new ValidatorJS(obj, this.config.rules, customMessages);
+            validator = new ValidatorJS(obj, rules, customMessages);
         } else {
-            validator = new ValidatorJS(this.model, this.config.rules, customMessages);
+            validator = new ValidatorJS(this.model, rules, customMessages);
         }
         if (this.config.attributeNames) {
             validator.setAttributeNames(this.translateAttributeNames(this.config.attributeNames));
@@ -206,11 +220,11 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
      * Translate the given messages using the localizationProvider.
      * @param messages the message keys to translate.
      */
-    private translateMessageKeys(messages: ValidatorJS.ErrorMessages) {
+    private translateMessageKeys(messages: { [key: string]: string }) {
         if (messages && this.config.localizationProvider) {
             const translations = {};
             for (let key of Object.keys(messages)) {
-                if (translations.hasOwnProperty(key)) {
+                if (messages.hasOwnProperty(key)) {
                     translations[key] = this.config.localizationProvider.translate(key);
                 }
             }
@@ -240,6 +254,9 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
      * @returns {boolean} true, if we shall show errors on that field; false, otherwise.
      */
     public showErrorsOnField(field: string): boolean {
+        if (this.config.shallShowErrorsOn) {
+            return this.config.shallShowErrorsOn(this, field);
+        }
         return this.validatedFields.has(field);     //only show if (explicitly) validated
     }
 

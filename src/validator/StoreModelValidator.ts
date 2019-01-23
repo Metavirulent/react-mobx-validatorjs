@@ -110,15 +110,17 @@ export class StoreModelValidator<T> implements ModelValidator<T> {
     /**
      * One of the properties on the given model has changed.
      * Validate the corresponding field.
-     * @param {IObjectDidChange} change describes the change.
+     * @param {IObjectDidChange | IMapDidChange} change describes the change.
      */
-    private modelChanged(change: IObjectDidChange) {
+    private modelChanged(change: IObjectDidChange | IMapDidChange) {
         if (change.type === 'update' || change.type === 'add') {
             if (change.name) {
                 this.validateField(change.name);      //field was changed, validate it
             } else {
                 this.validateForm();
             }
+        } else if (change.type === 'remove' || 'delete') {
+            this.validateField(change.name);
         }
     }
 
